@@ -149,9 +149,9 @@ else:
         st.session_state.pulse = True # Trigger map animation
         with st.status("Sending love...", expanded=True) as status:
             time.sleep(1)
-            st.write("Connecting to my heart...")
+            st.write("💖Connecting to my heart...")
             time.sleep(1)
-            st.write("Making my phone buzz!")
+            st.write("📱Making my phone buzz!")
             if send_telegram_hug(): 
                 status.update(label="Hug Delivered! ❤️", state="complete")
                 st.balloons()
