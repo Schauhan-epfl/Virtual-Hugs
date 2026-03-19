@@ -147,12 +147,11 @@ else:
     st.markdown('<div class="big-heart-btn">', unsafe_allow_html=True)
     if st.button("❤️"):
         st.session_state.pulse = True # Trigger map animation
-        with st.status("Sending love...", expanded=False) as status:
+        with st.status("Sending love...", expanded=True) as status:
             time.sleep(1)
             st.write("Connecting to my heart...")
             time.sleep(1)
             st.write("Making my phone buzz!")
-            time.sleep(1)
             if send_telegram_hug(): 
                 status.update(label="Hug Delivered! ❤️", state="complete")
                 st.balloons()
