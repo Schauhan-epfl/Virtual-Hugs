@@ -2,6 +2,8 @@ import streamlit as st
 import requests
 import time
 from datetime import date
+import pandas as pd
+import pydeck as pdk
 
 # --- ⚙️ CONFIGURATION ---
 TOKEN = st.secrets["TOKEN"]
@@ -128,30 +130,95 @@ else:
     # --- MAIN CONTENT ---
     days_apart = (date.today() - START_DATE).days
     
+    # Coordinates - Update these!
+    LOC_A = [MY_LAT, MY_LON]  # Pink Marker 
+    LOC_B = [HER_LAT, HER_LON] # Blue Marker 
+
     st.markdown('<div class="main-card">', unsafe_allow_html=True)
     st.markdown("<h1>Virtual Hug</h1>", unsafe_allow_html=True)
     st.markdown(f"<p class='subtext'><b>{days_apart} Days</b> of loving you</p>", unsafe_allow_html=True)
     
-    st.write("Tap the heart to let me know you're thinking of me.")
+    st.write("Tap the heart to send a hug across the map.")
+
+    # State for animation
+    if "pulse" not in st.session_state:
+        st.session_state.pulse = False
 
     st.markdown('<div class="big-heart-btn">', unsafe_allow_html=True)
-    
     if st.button("❤️"):
+        st.session_state.pulse = True # Trigger map animation
         with st.status("Sending love...", expanded=False) as status:
+            time.sleep(1)
             st.write("Connecting to my heart...")
             time.sleep(1)
             st.write("Making my phone buzz!")
-            time.sleep(1.5)
-            st.write("I felt your hug!")
-            
+            time.sleep(1)
             if send_telegram_hug(): 
                 status.update(label="Hug Delivered! ❤️", state="complete")
                 st.balloons()
             else:
                 status.update(label="Connection error! 💔", state="error")
-                
     st.markdown('</div>', unsafe_allow_html=True)
 
-    st.markdown("<br><br>", unsafe_allow_html=True)
-    st.caption("✨ Added to your Home Screen for easy access!")
+    # --- THE ANIMATED MAP ---
+    
+    # Prepare data for the arc and points
+    arc_data = pd.DataFrame([{
+        "start": LOC_A,
+        "end": LOC_B,
+        "name": "Connection"
+    }])
+
+    # Define the layers
+    layers = [
+        # 1. The Curved Arc
+        pdk.Layer(
+            "ArcLayer",
+            data=arc_data,
+            get_source_position="start",
+            get_target_position="end",
+            get_source_color=[255, 77, 109, 200] if st.session_state.pulse else [255, 255, 255, 100],
+            get_target_color=[0, 150, 255, 200] if st.session_state.pulse else [255, 255, 255, 100],
+            width=5 if st.session_state.pulse else 2,
+        ),
+        # 2. Pink Marker (Location A)
+        pdk.Layer(
+            "ScatterplotLayer",
+            data=pd.DataFrame([{"pos": LOC_A}]),
+            get_position="pos",
+            get_color=[255, 77, 109],
+            get_radius=50000 if st.session_state.pulse else 20000, # Pulse effect
+            pickable=True,
+        ),
+        # 3. Blue Marker (Location B)
+        pdk.Layer(
+            "ScatterplotLayer",
+            data=pd.DataFrame([{"pos": LOC_B}]),
+            get_position="pos",
+            get_color=[0, 150, 255],
+            get_radius=50000 if st.session_state.pulse else 20000, # Pulse effect
+            pickable=True,
+        ),
+    ]
+
+    # Create the map deck
+    view_state = pdk.ViewState(
+        latitude=(LOC_A[0] + LOC_B[0]) / 2,
+        longitude=(LOC_A[1] + LOC_B[1]) / 2,
+        zoom=2,
+        pitch=45,
+    )
+
+    st.pydeck_chart(pdk.Deck(
+        layers=layers,
+        initial_view_state=view_state,
+        map_style="mapbox://styles/mapbox/light-v9", # Clean, romantic look
+    ))
+
+    # Reset pulse after map renders
+    if st.session_state.pulse:
+        time.sleep(0.1)
+        st.session_state.pulse = False
+
+    st.caption("✨ Distance means nothing when someone means everything.")
     st.markdown('</div>', unsafe_allow_html=True)
