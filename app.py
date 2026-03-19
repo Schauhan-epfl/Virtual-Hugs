@@ -4,20 +4,7 @@ import time
 from datetime import date
 import pandas as pd
 import pydeck as pdk
-from streamlit_lottie import st_lottie
 
-def load_lottieurl(url: str):
-    try:
-        r = requests.get(url)
-        if r.status_code != 200:
-            return None
-        return r.json()
-    except Exception:
-        return None
-
-# 2. Use this stable, direct JSON link
-# This is a classic pulsing heart from a reliable CDN
-lottie_heart = load_lottieurl("https://lottie.host/811802e3-080c-4318-8f83-e1898b6715b7/Vv02WunZfK.json")
 
 # --- ⚙️ CONFIGURATION ---
 TOKEN = st.secrets["TOKEN"]
@@ -141,14 +128,15 @@ if not st.session_state.auth:
     st.markdown('</div>', unsafe_allow_html=True)
     
 else:
-    # --- MAIN CONTENT ---
-    st.markdown('<div class="main-card">', unsafe_allow_html=True)
-    
-    # Display the Lottie Animation
-    st_lottie(lottie_heart, height=150, key="main_heart")
-    
-    st.markdown("<h1>Virtual Hug</h1>", unsafe_allow_html=True)
-    
+    # This uses a transparent GIF of a floating heart
+    st.markdown(
+        """
+        <div style="display: flex; justify-content: center;">
+            <img src="https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExNmdzeHhtbHJiaWp4bGFrZzNuc29hZnVteDhmcWZubWx6enZ6cnhmdyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/eawHU9reW91C9zIqd0/giphy.gif" width="150">
+        </div>
+        """, 
+        unsafe_allow_html=True
+    )
     # --- MAIN CONTENT 2 ---
     days_apart = (date.today() - START_DATE).days
     
