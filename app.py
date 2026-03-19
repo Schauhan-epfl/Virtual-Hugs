@@ -4,6 +4,17 @@ import time
 from datetime import date
 import pandas as pd
 import pydeck as pdk
+from streamlit_lottie import st_lottie
+
+def load_lottieurl(url: str):
+    r = requests.get(url)
+    if r.status_code != 200:
+        return None
+    return r.json()
+
+# Choose a cute animation (Heart, Paper Plane, etc.)
+# You can find more at lottiefiles.com
+lottie_heart = load_lottieurl("https://assets5.lottiefiles.com/packages/lf20_077kruea.json")
 
 # --- ⚙️ CONFIGURATION ---
 TOKEN = st.secrets["TOKEN"]
@@ -128,6 +139,14 @@ if not st.session_state.auth:
     
 else:
     # --- MAIN CONTENT ---
+    st.markdown('<div class="main-card">', unsafe_allow_html=True)
+    
+    # Display the Lottie Animation
+    st_lottie(lottie_heart, height=150, key="main_heart")
+    
+    st.markdown("<h1>Virtual Hug</h1>", unsafe_allow_html=True)
+    
+    # --- MAIN CONTENT 2 ---
     days_apart = (date.today() - START_DATE).days
     
     # Coordinates - Update these!
