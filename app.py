@@ -7,14 +7,17 @@ import pydeck as pdk
 from streamlit_lottie import st_lottie
 
 def load_lottieurl(url: str):
-    r = requests.get(url)
-    if r.status_code != 200:
+    try:
+        r = requests.get(url)
+        if r.status_code != 200:
+            return None
+        return r.json()
+    except Exception:
         return None
-    return r.json()
 
-# Choose a cute animation (Heart, Paper Plane, etc.)
-# You can find more at lottiefiles.com
-lottie_heart = load_lottieurl("https://assets5.lottiefiles.com/packages/lf20_077kruea.json")
+# 2. Use this stable, direct JSON link
+# This is a classic pulsing heart from a reliable CDN
+lottie_heart = load_lottieurl("https://lottie.host/811802e3-080c-4318-8f83-e1898b6715b7/Vv02WunZfK.json")
 
 # --- ⚙️ CONFIGURATION ---
 TOKEN = st.secrets["TOKEN"]
