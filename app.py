@@ -221,7 +221,7 @@ else:
     st.pydeck_chart(pdk.Deck(
         layers=layers,
         initial_view_state=view_state,
-        map_style="satellite", # Clean, romantic look
+        map_style="road", # Clean, romantic look
     ))
 
     # Reset pulse after map renders
