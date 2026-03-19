@@ -131,8 +131,8 @@ else:
     days_apart = (date.today() - START_DATE).days
     
     # Coordinates - Update these!
-    LOC_B = [st.secrets["MY_LAT"], st.secrets["MY_LON"]]  # Pink Marker 
-    LOC_A = [st.secrets["HER_LAT"], st.secrets["HER_LON"]] # Blue Marker 
+    LOC_B = [st.secrets["MY_LON"], st.secrets["MY_LAT"]]  # Pink Marker 
+    LOC_A = [st.secrets["HER_LON"], st.secrets["HER_LAT"]] # Blue Marker 
 
     st.markdown('<div class="main-card">', unsafe_allow_html=True)
     st.markdown("<h1>Virtual Hug</h1>", unsafe_allow_html=True)
